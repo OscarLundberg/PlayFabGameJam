@@ -8,7 +8,7 @@ handlers.list_lobby_events = function (args, context) {
 handlers.send_lobby_event = function (args, context) {
 
     var lobby_events = server.GetTitleData([args.Lobby]) || [];
-    lobby_events.push(args.event);
+    lobby_events.push(args.Payload);
     server.SetTitleData(args.Lobby, lobby_events);
     return { events: lobby_events };
 }
