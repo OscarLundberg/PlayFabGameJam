@@ -37,6 +37,13 @@ public class LobbyData : MonoBehaviour
 
     public static string Format(Lobby lobby)
     {
-        return $"{lobby.name} [{lobby.users.Count} / 10]";
+        if (!lobby.isJoinable)
+        {
+            return $"{lobby.name}";
+        }
+        else
+        {
+            return $"{lobby.name} [{lobby.users.Count} / 10]";
+        }
     }
 }

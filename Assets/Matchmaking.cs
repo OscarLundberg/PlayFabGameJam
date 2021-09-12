@@ -6,6 +6,8 @@ using PlayFab.ClientModels;
 using PlayFab.EventsModels;
 using PlayFab.Events;
 using PlayFab.MultiplayerModels;
+using UnityEngine.Events;
+
 public class Matchmaking : MonoBehaviour
 {
     public GameObject prefab;
@@ -17,10 +19,15 @@ public class Matchmaking : MonoBehaviour
         // find games
         var req = new ExecuteCloudScriptRequest();
         req.FunctionName = "get_lobbies";
-
+        var tempRes = new GetLobbiesResponse();
+        tempRes.lobbies = new List<Lobby>() { new Lobby("Searching...", false) };
+        UpdateList(tempRes);
         PlayFabClientAPI.ExecuteCloudScript<GetLobbiesResponse>(req, (ExecuteCloudScriptResult res) =>
         {
-            UpdateList(res.FunctionResult as GetLobbiesResponse);
+            StartCoroutine(AfterDelay(2, () =>
+            {
+                UpdateList(res.FunctionResult as GetLobbiesResponse);
+            }));
         }, mm.DefaultError);
     }
 
@@ -39,6 +46,7 @@ public class Matchmaking : MonoBehaviour
         {
             var go = (Instantiate(prefab, parent) as GameObject).GetComponent<LobbyData>();
             go.SetData(lobby, this);
+            go.UpdateText();
         }
     }
 
@@ -56,6 +64,7 @@ public class Matchmaking : MonoBehaviour
             req.FunctionParameter = lobbyReq;
             PlayFabClientAPI.ExecuteCloudScript<GenericBooleanResponse>(req, (ExecuteCloudScriptResult res) =>
             {
+                Debug.Log(res.ToJson());
                 if ((res.FunctionResult as GenericBooleanResponse).success)
                 {
                     TryJoin(lobbyReq.Payload.id);
@@ -87,6 +96,11 @@ public class Matchmaking : MonoBehaviour
         mm.Gameplay();
     }
 
+    IEnumerator AfterDelay(float sec, UnityAction ua)
+    {
+        yield return new WaitForSeconds(sec);
+        ua();
+    }
 }
 
 
@@ -99,6 +113,7 @@ public class Lobby
         this.name = name;
         this.id = System.Guid.NewGuid().ToString();
         this.isJoinable = joinable;
+        this.users = new List<string>();
     }
     [SerializeField]
     public string id;

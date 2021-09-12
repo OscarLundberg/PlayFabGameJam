@@ -59,16 +59,13 @@ public class MainMenu : MonoBehaviour
 
     public void Gameplay()
     {
-        mainMenu.SetActive(false);
-        login.SetActive(false);
-        matchmaking.SetActive(false);
+        DisableAll();
         gh.StartGame(this);
     }
 
     public void FindMatch()
     {
-        mainMenu.SetActive(false);
-        login.SetActive(false);
+        DisableAll();
         matchmaking.SetActive(true);
         matchmaking.GetComponent<Matchmaking>().Search(this);
     }
@@ -100,14 +97,14 @@ public class MainMenu : MonoBehaviour
     {
         Error("");
         username.text = PlayerPrefs.GetString("username");
-        login.SetActive(false);
+        DisableAll();
         mainMenu.SetActive(true);
     }
 
     public void Logout()
     {
         Error("");
-        mainMenu.SetActive(false);
+        DisableAll();
         login.SetActive(true);
     }
 
@@ -120,6 +117,15 @@ public class MainMenu : MonoBehaviour
     public void DefaultError(PlayFabError err)
     {
         Error(err.ErrorMessage);
+    }
+
+    public void DisableAll()
+    {
+        login.SetActive(false);
+        mainMenu.SetActive(false);
+        matchmaking.SetActive(false);
+
+
     }
 
 }
