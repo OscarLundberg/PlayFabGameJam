@@ -41,7 +41,7 @@ handlers.create_lobby = function (args, context) {
 
 handlers.get_lobbies = function (args, context) {
 
-    let response = JSON.stringify({ lobbies: read("lobbies") });
+    let response = { lobbies: read("lobbies") };
     log.info(response);
     return response;
 }
