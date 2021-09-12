@@ -34,7 +34,8 @@ handlers.send_lobby_event = function (args, context) {
 
 handlers.create_lobby = function (args, context) {
     let lobbies = read("lobbies");
-    lobbies.push(JSON.parse(args.Payload));
+    log.info(args);
+    lobbies.push(args.Payload);
     write(lobbies);
     return { success: true };
 }
