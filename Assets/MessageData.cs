@@ -8,6 +8,7 @@ public class MessageData : MonoBehaviour
     public void SetData(MessagePayload mp)
     {
         messagePayload = mp;
+        UpdateText();
     }
 
     public void UpdateText()

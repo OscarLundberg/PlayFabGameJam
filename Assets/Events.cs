@@ -4,6 +4,10 @@ using UnityEngine;
 [System.Serializable]
 public class MessagePayload
 {
+    public MessagePayload()
+    {
+
+    }
     public MessagePayload(string lobby, string sender, string message)
     {
         this.LobbyID = lobby;

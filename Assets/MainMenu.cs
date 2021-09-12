@@ -16,6 +16,7 @@ public class MainMenu : MonoBehaviour
     public TMP_InputField login_password;
     public GameplayHandler gh;
     public GameObject matchmaking;
+    public GameObject sky;
 
     void Start()
     {
@@ -66,6 +67,7 @@ public class MainMenu : MonoBehaviour
     public void FindMatch()
     {
         DisableAll();
+        sky.SetActive(true);
         matchmaking.SetActive(true);
         matchmaking.GetComponent<Matchmaking>().Search(this);
     }
@@ -97,7 +99,11 @@ public class MainMenu : MonoBehaviour
     {
         Error("");
         username.text = PlayerPrefs.GetString("username");
+
+
         DisableAll();
+        sky.SetActive(true);
+
         mainMenu.SetActive(true);
     }
 
@@ -105,6 +111,7 @@ public class MainMenu : MonoBehaviour
     {
         Error("");
         DisableAll();
+        sky.SetActive(true);
         login.SetActive(true);
     }
 
@@ -124,8 +131,7 @@ public class MainMenu : MonoBehaviour
         login.SetActive(false);
         mainMenu.SetActive(false);
         matchmaking.SetActive(false);
-
-
+        sky.SetActive(false);
     }
 
 }

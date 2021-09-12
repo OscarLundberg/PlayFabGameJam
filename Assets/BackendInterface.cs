@@ -29,6 +29,10 @@ public class GenericBooleanResponse
 [System.Serializable]
 public class ListLobbyEventsResponse
 {
+    public ListLobbyEventsResponse()
+    {
+
+    }
     [SerializeField]
     public List<MessagePayload> events;
 }

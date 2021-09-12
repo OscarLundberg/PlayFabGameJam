@@ -17,7 +17,7 @@ MonoBehaviour:
   SelectedStudio: _OVERRIDE_
   SdkPath: Assets/PlayFabSDK
   EdExPath: 
-  LocalCloudScriptPath: 
+  LocalCloudScriptPath: /Users/oscarlundberg/PlayFabGameJam/cloud.js
   PanelIsShown: 0
-  curMainMenuIdx: 1
+  curMainMenuIdx: 4
   curSubMenuIdx: 0

@@ -29,6 +29,7 @@ public class LobbyData : MonoBehaviour
         {
             matchmaking.TryJoin(Lobby.id);
         });
+        btn.interactable = true;
         if (!Lobby.isJoinable)
         {
             btn.interactable = false;

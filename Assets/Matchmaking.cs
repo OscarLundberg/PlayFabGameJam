@@ -7,6 +7,7 @@ using PlayFab.EventsModels;
 using PlayFab.Events;
 using PlayFab.MultiplayerModels;
 using UnityEngine.Events;
+using PlayFab.Json;
 
 public class Matchmaking : MonoBehaviour
 {
@@ -27,7 +28,7 @@ public class Matchmaking : MonoBehaviour
             Debug.Log(res.ToJson());
             StartCoroutine(AfterDelay(2, () =>
             {
-                UpdateList(res.FunctionResult as GetLobbiesResponse);
+                UpdateList((GetLobbiesResponse)res.FunctionResult);
             }));
         }, mm.DefaultError);
     }
@@ -109,6 +110,12 @@ public class Matchmaking : MonoBehaviour
 [System.Serializable]
 public class Lobby
 {
+
+    public Lobby()
+    {
+
+    }
+
     public Lobby(string name, bool joinable = true)
     {
         this.name = name;
@@ -116,9 +123,17 @@ public class Lobby
         this.isJoinable = joinable;
         this.users = new List<string>();
     }
+
+    [JsonProperty]
     public string id { get; set; }
+
+    [JsonProperty]
     public string name { get; set; }
+
+    [JsonProperty]
     public List<string> users { get; set; }
+
+    [JsonProperty]
     public bool isJoinable { get; set; }
 
 }
@@ -155,5 +170,6 @@ public class CreateLobbyRequest
 [System.Serializable]
 public class GetLobbiesResponse
 {
+    [JsonProperty]
     public List<Lobby> lobbies { get; set; }
 }
