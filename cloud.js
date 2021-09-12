@@ -1,9 +1,19 @@
 const read = function (key) {
-    return JSON.parse(server.GetTitleData()[key] || "[]");
+    // return JSON.parse(server.GetTitleData()[key] || "[]");
+
+    var dataRequest = { "Keys": [key] };
+    var response = server.GetTitleData(dataRequest);
+    if (!response.Data.hasOwnProperty(key)) {
+        log.error("no data found");
+        return [];
+    }
+    else {
+        return JSON.parse(response.Data[key]);
+    }
 }
 
 const write = function (key, val) {
-    let request = { key, value: JSON.stringify(val) }
+    let request = { "Key": key, "Value": JSON.stringify(val) }
     server.SetTitleData(request);
 }
 
