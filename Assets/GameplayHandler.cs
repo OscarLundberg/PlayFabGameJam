@@ -21,6 +21,7 @@ public class GameplayHandler : MonoBehaviour
     public TMP_InputField chatmsg;
     public Button sendmsg;
 
+    public ChatManager chatManager;
 
     public string username;
     public string SessionTicket;
@@ -59,37 +60,35 @@ public class GameplayHandler : MonoBehaviour
 
     public void Chat(TMP_InputField inp)
     {
-
-        var message = new EventContents();
-        message.Name = "Chat";
-        message.Payload = new MessagePayload(Lobby, username, inp.text);
-
-        // message.Payload =
-        var req = new WriteEventsRequest();
-        req.Events = new List<EventContents>() { message };
+        var payload = new MessagePayload(Lobby, username, inp.text);
         ChatCooldown();
-        PlayFabEventsAPI.WriteEvents(req, (WriteEventsResponse res) =>
+        SendEvent(payload, (ExecuteCloudScriptResult res) =>
         {
+            chatManager.SetEvents(res.FunctionResult as ListLobbyEventsResponse);
             StartCoroutine(AfterDelay(1, ChatReset));
-            // res.AssignedEventIds()
-        }, mm.DefaultError);
-
-        // inp.text
+        });
     }
 
-    void Poll()
+
+    void SendEvent(MessagePayload payload, System.Action<ExecuteCloudScriptResult> callback)
     {
         var req = new ExecuteCloudScriptRequest();
-        req.FunctionName = "Receive";
-        req.FunctionParameter = Lobby;
+        req.FunctionName = "list_lobby_events";
+        req.FunctionParameter = new Poll(Lobby);
+
+        PlayFabClientAPI.ExecuteCloudScript<ListLobbyEventsResponse>(req, callback, mm.DefaultError);
+    }
+
+    void SendPoll()
+    {
+        var req = new ExecuteCloudScriptRequest();
+        req.FunctionName = "list_lobby_events";
+        req.FunctionParameter = new Poll(Lobby);
 
         PlayFabClientAPI.ExecuteCloudScript(req, (ExecuteCloudScriptResult res) =>
         {
-            // res.FunctionResult();
-
+            chatManager.SetEvents(res.FunctionResult as ListLobbyEventsResponse);
         }, mm.DefaultError);
-        // GetMatchRequest
-        // PlayFabMultiplayerAPI.GetMatch()
     }
 
 

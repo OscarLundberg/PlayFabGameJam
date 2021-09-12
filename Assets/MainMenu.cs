@@ -18,7 +18,15 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
-        Logout();
+        if (PlayerPrefs.HasKey("username"))
+        {
+            login_username.text = PlayerPrefs.GetString("username");
+            GuestLogin();
+        }
+        else
+        {
+            Logout();
+        }
     }
 
     // public void Login()
@@ -57,21 +65,19 @@ public class MainMenu : MonoBehaviour
 
     public void FindMatch()
     {
-        var ticket = PlayerPrefs.GetString("SessionTicket"); ;
+        Debug.Log("Finding match");
+        var ticket = PlayerPrefs.GetString("SessionTicket");
         var stats = new GetQueueStatisticsRequest();
         stats.QueueName = "default-queue";
-        stats.AuthenticationContext.ClientSessionTicket = ticket;
+        Debug.Log(ticket);
+        // stats.AuthenticationContext = new ientSessionTicket = ticket;
         PlayFab.PlayFabMultiplayerAPI.GetQueueStatistics(stats, (GetQueueStatisticsResult res) =>
         {
-            var status = $"{res.NumberOfPlayersMatching} players in queue. Estimated time until match: {res.TimeToMatchStatisticsInSeconds}";
+            var status = $"{res.NumberOfPlayersMatching + 1} players in queue. \n Invite a friend for faster queue times :)";
+            Debug.Log(status);
             Error(status);
-        }, (PlayFabError err) =>
-        {
-            Error(err.ErrorMessage);
-        });
+        }, DefaultError);
 
-
-        Error("Finding Match...");
         var req = new MatchmakeRequest();
         req.AuthenticationContext.ClientSessionTicket = ticket;
         req.BuildVersion = "default";
@@ -79,6 +85,7 @@ public class MainMenu : MonoBehaviour
         req.GameMode = "default";
         PlayFabClientAPI.Matchmake(req, (MatchmakeResult mr) =>
         {
+            Debug.Log("Found match");
             PlayerPrefs.SetString("Lobby", mr.LobbyID);
             PlayerPrefs.SetString("MatchTicket", mr.Ticket);
             PlayerPrefs.Save();
