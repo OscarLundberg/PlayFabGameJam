@@ -17,8 +17,7 @@ handlers.create_lobby = function (args, context) {
     let lobbies = server.GetTitleData(["lobbies"]) || [];
     lobbies.push(args.Payload);
     server.SetTitleData("lobbies", lobbies);
-    this.join_lobby()
-    return true;
+    return { success: true };
 }
 
 handlers.get_lobbies = function (args, context) {
@@ -37,5 +36,5 @@ handlers.join_lobby = function (args, context) {
             }
         }
     }
-    return false;
+    return { success: false };
 }

@@ -15,6 +15,7 @@ public class MainMenu : MonoBehaviour
     public TMP_InputField login_username;
     public TMP_InputField login_password;
     public GameplayHandler gh;
+    public GameObject matchmaking;
 
     void Start()
     {
@@ -65,33 +66,10 @@ public class MainMenu : MonoBehaviour
 
     public void FindMatch()
     {
-        Debug.Log("Finding match");
-        var ticket = PlayerPrefs.GetString("SessionTicket");
-        var stats = new GetQueueStatisticsRequest();
-        stats.QueueName = "default-queue";
-        Debug.Log(ticket);
-        // stats.AuthenticationContext = new ientSessionTicket = ticket;
-        PlayFab.PlayFabMultiplayerAPI.GetQueueStatistics(stats, (GetQueueStatisticsResult res) =>
-        {
-            var status = $"{res.NumberOfPlayersMatching + 1} players in queue. \n Invite a friend for faster queue times :)";
-            Debug.Log(status);
-            Error(status);
-        }, DefaultError);
-
-        var req = new MatchmakeRequest();
-        // req.AuthenticationContext.ClientSessionTicket = ticket;
-        // req.BuildVersion = "default";
-        // req.Region = Region.USEast;
-        // req.GameMode = "default";
-        PlayFabClientAPI.Matchmake(req, (MatchmakeResult mr) =>
-        {
-            Debug.Log("Found match");
-            PlayerPrefs.SetString("Lobby", mr.LobbyID);
-            PlayerPrefs.SetString("MatchTicket", mr.Ticket);
-            PlayerPrefs.Save();
-            Gameplay();
-
-        }, DefaultError);
+        mainMenu.SetActive(false);
+        login.SetActive(false);
+        matchmaking.SetActive(true);
+        matchmaking.GetComponent<Matchmaking>().Search(this);
     }
 
     public void GuestLogin()
