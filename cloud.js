@@ -36,7 +36,7 @@ handlers.create_lobby = function (args, context) {
     let lobbies = read("lobbies");
     log.info(args);
     lobbies.push(args.Payload);
-    write(lobbies);
+    write("lobbies", lobbies);
     return { success: true };
 }
 
