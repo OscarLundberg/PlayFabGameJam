@@ -24,6 +24,7 @@ public class Matchmaking : MonoBehaviour
         UpdateList(tempRes);
         PlayFabClientAPI.ExecuteCloudScript<GetLobbiesResponse>(req, (ExecuteCloudScriptResult res) =>
         {
+            Debug.Log(res.ToJson());
             StartCoroutine(AfterDelay(2, () =>
             {
                 UpdateList(res.FunctionResult as GetLobbiesResponse);
