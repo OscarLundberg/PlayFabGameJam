@@ -34,14 +34,16 @@ handlers.send_lobby_event = function (args, context) {
 
 handlers.create_lobby = function (args, context) {
     let lobbies = read("lobbies");
-    log.info(args);
     lobbies.push(args.Payload);
     write("lobbies", lobbies);
     return { success: true };
 }
 
 handlers.get_lobbies = function (args, context) {
-    return { lobbies: read("lobbies") };
+
+    let response = JSON.stringify({ lobbies: read("lobbies") });
+    log.info(response);
+    return response;
 }
 
 handlers.join_lobby = function (args, context) {
