@@ -50,19 +50,41 @@ public class Matchmaking : MonoBehaviour
         }
         else
         {
+            var lobbyReq = new CreateLobbyRequest(inp.text);
             var req = new ExecuteCloudScriptRequest();
             req.FunctionName = "create_lobby";
-            req.FunctionParameter = new CreateLobbyRequest();
-            PlayFabClientAPI.ExecuteCloudScript<GetLobbiesResponse>(req, (ExecuteCloudScriptResult res) =>
+            req.FunctionParameter = lobbyReq;
+            PlayFabClientAPI.ExecuteCloudScript<GenericBooleanResponse>(req, (ExecuteCloudScriptResult res) =>
             {
-                UpdateList(res.FunctionResult as GetLobbiesResponse);
+                if ((res.FunctionResult as GenericBooleanResponse).success)
+                {
+                    TryJoin(lobbyReq.Payload.id);
+                }
+                else
+                {
+                    mm.Error("Could not create lobby");
+                }
             }, mm.DefaultError);
         }
     }
 
     public void TryJoin(string id)
     {
+        var lobbyReq = new JoinLobbyRequest(id, PlayerPrefs.GetString("username"));
+        var req = new ExecuteCloudScriptRequest();
+        req.FunctionName = "join_lobby";
+        req.FunctionParameter = lobbyReq;
+        PlayFabClientAPI.ExecuteCloudScript<Lobby>(req, (ExecuteCloudScriptResult res) =>
+        {
+            JoinLobby((res.FunctionResult as Lobby).id);
+        }, mm.DefaultError);
 
+    }
+
+    public void JoinLobby(string id)
+    {
+        PlayerPrefs.SetString("Lobby", id);
+        mm.Gameplay();
     }
 
 }
@@ -95,6 +117,12 @@ public class Lobby
 [System.Serializable]
 public class JoinLobbyRequest
 {
+    public JoinLobbyRequest(string lob, string usr)
+    {
+        this.Lobby = lob;
+        this.user = usr;
+    }
+
     [SerializeField]
     public string Lobby;
 

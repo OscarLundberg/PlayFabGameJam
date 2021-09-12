@@ -18,6 +18,13 @@ public class Poll
 }
 
 
+[System.Serializable]
+public class GenericBooleanResponse
+{
+    [SerializeField]
+    public bool success;
+}
+
 
 [System.Serializable]
 public class ListLobbyEventsResponse

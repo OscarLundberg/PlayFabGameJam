@@ -61,6 +61,7 @@ public class MainMenu : MonoBehaviour
     {
         mainMenu.SetActive(false);
         login.SetActive(false);
+        matchmaking.SetActive(false);
         gh.StartGame(this);
     }
 
