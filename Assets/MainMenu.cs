@@ -79,10 +79,10 @@ public class MainMenu : MonoBehaviour
         }, DefaultError);
 
         var req = new MatchmakeRequest();
-        req.AuthenticationContext.ClientSessionTicket = ticket;
-        req.BuildVersion = "default";
-        req.Region = Region.USEast;
-        req.GameMode = "default";
+        // req.AuthenticationContext.ClientSessionTicket = ticket;
+        // req.BuildVersion = "default";
+        // req.Region = Region.USEast;
+        // req.GameMode = "default";
         PlayFabClientAPI.Matchmake(req, (MatchmakeResult mr) =>
         {
             Debug.Log("Found match");
