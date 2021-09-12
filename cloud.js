@@ -14,7 +14,8 @@ handlers.send_lobby_event = function (args, context) {
 }
 
 handlers.create_lobby = function (args, context) {
-    let lobbies = server.GetTitleData("lobbies") || [];
+    let lobbies = server.GetTitleData()["lobbies"] || [];
+    console.log();
     lobbies.push(args.Payload);
     server.SetTitleData("lobbies", lobbies);
     return { success: true };
