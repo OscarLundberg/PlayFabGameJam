@@ -36,7 +36,7 @@ public class Matchmaking : MonoBehaviour
     {
         if (response.lobbies.Count <= 0)
         {
-            response.lobbies.Add(new Lobby("No active lobbies - Create one below", false));
+            response.lobbies = new List<Lobby>() { new Lobby("No active lobbies - Create one below", false) };
         }
         foreach (Transform t in parent)
         {
@@ -116,17 +116,10 @@ public class Lobby
         this.isJoinable = joinable;
         this.users = new List<string>();
     }
-    [SerializeField]
-    public string id;
-
-    [SerializeField]
-    public string name;
-
-    [SerializeField]
-    public List<string> users;
-
-    [SerializeField]
-    public bool isJoinable;
+    public string id { get; set; }
+    public string name { get; set; }
+    public List<string> users { get; set; }
+    public bool isJoinable { get; set; }
 
 }
 
@@ -162,6 +155,5 @@ public class CreateLobbyRequest
 [System.Serializable]
 public class GetLobbiesResponse
 {
-    [SerializeField]
-    public List<Lobby> lobbies;
+    public List<Lobby> lobbies { get; set; }
 }
