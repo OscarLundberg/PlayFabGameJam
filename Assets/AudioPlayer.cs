@@ -21,7 +21,7 @@ public class AudioPlayer : MonoBehaviour
     public AudioClip morningAmb;
     public AudioClip nightAmb;
     public AudioClip morningSfx;
-    public AudioClip nightSfx;
+    public AudioClip convictedSfx;
 
     public List<AudioClip> musicClips;
     public AudioSource morning;
@@ -48,7 +48,6 @@ public class AudioPlayer : MonoBehaviour
     public void Night()
     {
         Play(nightAmb, night);
-        Play(nightSfx, sfx);
     }
 
     public void RndClip()
@@ -56,5 +55,8 @@ public class AudioPlayer : MonoBehaviour
         Play(musicClips[Random.Range(0, musicClips.Count - 1)], music);
     }
 
-
+    public void Convicted()
+    {
+        Play(convictedSfx, sfx);
+    }
 }
