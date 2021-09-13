@@ -14,7 +14,7 @@ public class MessageData : MonoBehaviour
         }
         else if (mp.type == "Private")
         {
-            UpdateText(mp.message);
+            UpdateText("<color=yellow>" + mp.message);
         }
         else
         {

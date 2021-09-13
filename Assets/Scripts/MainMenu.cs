@@ -19,7 +19,8 @@ public class MainMenu : MonoBehaviour
     public GameplayHandler gh;
     public GameObject matchmaking;
     public GameObject sky;
-
+    public AudioSource source;
+    public bool fadeout;
     void Start()
     {
         if (instance != null)
@@ -70,6 +71,7 @@ public class MainMenu : MonoBehaviour
 
     public void Gameplay()
     {
+        fadeout = true;
         DisableAll();
         gh.StartGame(this);
     }
@@ -119,6 +121,7 @@ public class MainMenu : MonoBehaviour
 
     public void Logout()
     {
+        fadeout = false;
         Error("");
         DisableAll();
         sky.SetActive(true);
@@ -142,6 +145,20 @@ public class MainMenu : MonoBehaviour
         mainMenu.SetActive(false);
         matchmaking.SetActive(false);
         sky.SetActive(false);
+    }
+
+
+
+    void Update()
+    {
+        if (fadeout)
+        {
+            source.volume = Mathf.Max(0, Mathf.Lerp(source.volume, -1, Time.deltaTime * 0.1f));
+        }
+        else
+        {
+            source.volume = Mathf.Min(1, Mathf.Lerp(source.volume, 1, Time.deltaTime * 0.1f));
+        }
     }
 
 }
