@@ -16,6 +16,16 @@ public class MessagePayload
         this.timestring = System.DateTime.UtcNow.ToString();
     }
 
+    public MessagePayload(string lobby, string sender, string message, string param, string type = "System")
+    {
+        this.LobbyID = lobby;
+        this.sender = sender;
+        this.message = message;
+        this.timestring = System.DateTime.UtcNow.ToString();
+        this.type = type;
+        this.param = param;
+    }
+
     [SerializeField]
     public string LobbyID;
 
@@ -27,7 +37,13 @@ public class MessagePayload
     public string message;
 
     [SerializeField]
+    public string param;
+
+    [SerializeField]
     public string timestring;
+
+    [SerializeField]
+    public string type;
 
     public System.DateTime timestamp
     {

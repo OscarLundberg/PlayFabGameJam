@@ -33,6 +33,7 @@ public class ListLobbyEventsResponse
     {
 
     }
+
     [SerializeField]
     public List<MessagePayload> events;
 }

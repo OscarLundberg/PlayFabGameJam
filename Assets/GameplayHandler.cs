@@ -17,6 +17,7 @@ using UnityEngine.Events;
 
 public class GameplayHandler : MonoBehaviour
 {
+    public static bool stopPolling = false;
     public MainMenu mm;
 
     public TMP_InputField chatmsg;
@@ -31,12 +32,26 @@ public class GameplayHandler : MonoBehaviour
 
     public GameObject gameplay;
 
+    public static GameplayHandler instance;
+    public List<MessagePayload> privateMessages;
+
     // Start is called before the first frame update
     public void StartGame(MainMenu src)
     {
+        if (instance != null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+        maxPolls = 0;
         mm = src;
+        privateMessages = new List<MessagePayload>();
         LoadPrefs();
         gameplay.SetActive(true);
+        SendPoll();
     }
 
 
@@ -48,15 +63,16 @@ public class GameplayHandler : MonoBehaviour
         Lobby = PlayerPrefs.GetString("Lobby");
     }
 
+
     public void ChatCooldown()
     {
+        EventSystem.current.SetSelectedGameObject(null);
         chatmsg.interactable = false;
         sendmsg.interactable = false;
     }
 
     public void ChatReset()
     {
-        EventSystem.current.SetSelectedGameObject(null);
         chatmsg.interactable = true;
         sendmsg.interactable = true;
         chatmsg.text = "";
@@ -74,7 +90,7 @@ public class GameplayHandler : MonoBehaviour
     }
 
 
-    void SendEvent(MessagePayload payload, System.Action<ExecuteCloudScriptResult> callback)
+    public void SendEvent(MessagePayload payload, System.Action<ExecuteCloudScriptResult> callback)
     {
         var req = new ExecuteCloudScriptRequest();
         req.FunctionName = "send_lobby_event";
@@ -83,18 +99,25 @@ public class GameplayHandler : MonoBehaviour
         PlayFabClientAPI.ExecuteCloudScript<ListLobbyEventsResponse>(req, callback, mm.DefaultError);
     }
 
+    public static int maxPolls = 0;
     void SendPoll()
     {
+        maxPolls++;
+        if (maxPolls >= 2400)
+            return;
+
         var req = new ExecuteCloudScriptRequest();
         req.FunctionName = "list_lobby_events";
         req.FunctionParameter = new Poll(Lobby);
 
         PlayFabClientAPI.ExecuteCloudScript<ListLobbyEventsResponse>(req, UpdateChat, mm.DefaultError);
+        StartCoroutine(AfterDelay(1, SendPoll));
     }
 
-    void UpdateChat(ExecuteCloudScriptResult res)
+
+
+    public void UpdateChat(ExecuteCloudScriptResult res)
     {
-        Debug.Log(res.ToJson());
         chatManager.SetEvents(res.FunctionResult as ListLobbyEventsResponse);
     }
 

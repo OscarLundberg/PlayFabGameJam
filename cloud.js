@@ -70,8 +70,8 @@ handlers.start_game = function (args, context) {
 }
 
 
-handlers.game_state_poll = function (args, context) {
-    return read(args.Lobby + "_state");
+handlers.lobby_poll = function (args, context) {
+    return read(args.Lobby);
 }
 
 handlers.progress_game = function (args, context) {
