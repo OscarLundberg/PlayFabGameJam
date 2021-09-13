@@ -14,18 +14,18 @@ public class MessageData : MonoBehaviour
         }
         else if (mp.type == "Private")
         {
-            //
+            UpdateText(mp.message);
         }
         else
         {
             messagePayload = mp;
-            UpdateText();
+            UpdateText(MessageData.Format(messagePayload));
         }
     }
 
-    public void UpdateText()
+    public void UpdateText(string text)
     {
-        textObject.text = MessageData.Format(messagePayload);
+        textObject.text = text;
     }
 
     public static string Format(MessagePayload mp)

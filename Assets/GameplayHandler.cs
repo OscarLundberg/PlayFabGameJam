@@ -48,7 +48,7 @@ public class GameplayHandler : MonoBehaviour
         }
         maxPolls = 0;
         mm = src;
-        privateMessages = new List<MessagePayload>();
+        privateMessages = new List<MessagePayload>() { new MessagePayload("", "HOST", "You have joined the room", "", "Private") };
         LoadPrefs();
         gameplay.SetActive(true);
         SendPoll();
@@ -129,7 +129,9 @@ public class GameplayHandler : MonoBehaviour
 
     public void UpdateChat(ExecuteCloudScriptResult res)
     {
-        chatManager.SetEvents(res.FunctionResult as ListLobbyEventsResponse);
+        List<MessagePayload> list = (res.FunctionResult as ListLobbyEventsResponse).events;
+        list.AddRange(privateMessages);
+        chatManager.SetEvents(list);
     }
 
     IEnumerator AfterDelay(float sec, UnityAction ua)

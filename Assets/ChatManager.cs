@@ -8,15 +8,15 @@ public class ChatManager : MonoBehaviour
     public GameObject messagePrefab;
     public Transform parent;
 
-    public void SetEvents(ListLobbyEventsResponse response)
+    public void SetEvents(List<MessagePayload> events)
     {
         foreach (Transform t in parent)
         {
             Destroy(t.gameObject);
         }
 
-        response.events.Sort(new CompareMessages());
-        foreach (MessagePayload mp in response.events)
+        events.Sort(new CompareMessages());
+        foreach (MessagePayload mp in events)
         {
             var go = (Instantiate(messagePrefab, parent) as GameObject).GetComponent<MessageData>();
             go.SetData(mp);
