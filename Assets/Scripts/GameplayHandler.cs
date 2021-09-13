@@ -38,6 +38,7 @@ public class GameplayHandler : MonoBehaviour
     // Start is called before the first frame update
     public void StartGame(MainMenu src)
     {
+        anim.SetTrigger("reset");
         if (instance != null)
         {
             instance = this;
@@ -113,9 +114,32 @@ public class GameplayHandler : MonoBehaviour
         PlayFabClientAPI.ExecuteCloudScript<ListLobbyEventsResponse>(req, UpdateChat, mm.DefaultError);
         StartCoroutine(AfterDelay(1, SendPoll));
     }
+    public SkyAnimator sa;
+    public void Day()
+    {
+        Gradient g = new Gradient();
+        g.colorKeys = new GradientColorKey[] { new GradientColorKey(new Color(160, 255, 228), 0), new GradientColorKey(new Color(160, 255, 228), 0) };
+        g.alphaKeys = new GradientAlphaKey[] { new GradientAlphaKey(0f, 0), new GradientAlphaKey(0.3f, 1) };
+        sa.range = g;
+    }
+
+    public void Night()
+    {
+        Gradient g = new Gradient();
+        g.colorKeys = new GradientColorKey[] { new GradientColorKey(new Color(118, 114, 161), 0), new GradientColorKey(new Color(118, 114, 161), 1) };
+        g.alphaKeys = new GradientAlphaKey[] { new GradientAlphaKey(0f, 0), new GradientAlphaKey(0.3f, 1) };
+        sa.range = g;
+    }
+    public Animator anim;
+    public void Convicted()
+    {
+        anim.SetTrigger("jaildoor");
+        AudioPlayer.instance.Convicted();
+    }
 
     public void LeaveGame()
     {
+        anim.SetTrigger("reset");
         var lobbyReq = new JoinLobbyRequest(Lobby, PlayerPrefs.GetString("username"));
         var req = new ExecuteCloudScriptRequest();
         req.FunctionName = "leave_lobby";
