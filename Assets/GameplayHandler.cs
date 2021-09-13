@@ -108,13 +108,24 @@ public class GameplayHandler : MonoBehaviour
 
         var req = new ExecuteCloudScriptRequest();
         req.FunctionName = "list_lobby_events";
-        req.FunctionParameter = new Poll(Lobby);
+        req.FunctionParameter = new Poll(Lobby, username);
 
         PlayFabClientAPI.ExecuteCloudScript<ListLobbyEventsResponse>(req, UpdateChat, mm.DefaultError);
         StartCoroutine(AfterDelay(1, SendPoll));
     }
 
+    public void LeaveGame()
+    {
+        var lobbyReq = new JoinLobbyRequest(Lobby, PlayerPrefs.GetString("username"));
+        var req = new ExecuteCloudScriptRequest();
+        req.FunctionName = "leave_lobby";
+        req.FunctionParameter = lobbyReq;
+        PlayFabClientAPI.ExecuteCloudScript<Lobby>(req, (ExecuteCloudScriptResult res) =>
+        {
+            MainMenu.instance.LoggedIn();
+        }, mm.DefaultError);
 
+    }
 
     public void UpdateChat(ExecuteCloudScriptResult res)
     {

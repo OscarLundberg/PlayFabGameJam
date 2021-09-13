@@ -5,7 +5,7 @@ using UnityEngine;
 public class ClientMethods : MonoBehaviour
 {
     public LobbyHandler lh;
-    public void UpdateLobby(string param)
+    public void lobby_poll(string param)
     {
         lh.SetEvents(JsonUtility.FromJson<Lobby>(param));
     }

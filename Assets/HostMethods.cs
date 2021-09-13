@@ -13,7 +13,7 @@ public class HostMethods : MonoBehaviour
     static bool isHost = false;
     static string Lobby;
     static Lobby lobbyState;
-
+    static string user;
 
     public GameObject startGameButton;
 
@@ -22,6 +22,7 @@ public class HostMethods : MonoBehaviour
         startGameButton.SetActive(true);
         HostMethods.isHost = true;
         HostMethods.Lobby = id;
+        HostMethods.user = PlayerPrefs.GetString("username");
         PollLobby();
     }
 
@@ -29,7 +30,7 @@ public class HostMethods : MonoBehaviour
     {
         StartCoroutine(Poll(2, () =>
         {
-            var param = new Poll(HostMethods.Lobby);
+            var param = new Poll(HostMethods.Lobby, HostMethods.user);
             RequestAndBroadcast<Lobby>("lobby_poll", param);
             return HostMethods.pollLobby;
         }));
@@ -38,7 +39,7 @@ public class HostMethods : MonoBehaviour
     public void StartGame()
     {
         HostMethods.pollLobby = false;
-        var param = new Poll(HostMethods.Lobby);
+        var param = new Poll(HostMethods.Lobby, HostMethods.user);
         SimpleRequest("start_game", param);
         BroadcastToClients("StartGame", true);
     }

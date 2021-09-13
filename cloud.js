@@ -58,6 +58,8 @@ const mode = (arr) => [...new Set(arr)]
 //     stage: -1
 // }
 
+
+
 handlers.start_game = function (args, context) {
     const lobby = read("lobbies")[args.Lobby];
     const roles = assignRoles(lobby);
@@ -71,6 +73,7 @@ handlers.start_game = function (args, context) {
 
 
 handlers.lobby_poll = function (args, context) {
+    write(args.user + "-activity", { timestamp: Date.now() });
     return read(args.Lobby);
 }
 
@@ -111,7 +114,7 @@ handlers.target = function (args, context) {
 }
 
 handlers.list_lobby_events = function (args, context) {
-
+    write(args.user + "-activity", { timestamp: Date.now() });
     var lobby_events = read(args.Lobby);
     return { events: lobby_events };
 };
@@ -129,10 +132,32 @@ handlers.create_lobby = function (args, context) {
     write("lobbies", lobbies);
     return { success: true };
 }
+function prune() {
+    let activeLobbies = [];
+    for (let lobby of lobbies) {
+        let activeUsers = [];
+        for (let user of lobby.users) {
+            const activity = read(user + "-activity");
+            if (Date.now() - activity.timestamp > 15000) {
 
+            } else {
+                activeUsers.push(user);
+            }
+        }
+        if (activeUsers.length > 0) {
+            let updatedLobby = lobby;
+            updatedLobby.users = activeUsers;
+            activeLobbies.push(updatedLobby);
+        } else {
+
+        }
+    }
+    return activeLobbies;
+}
 handlers.get_lobbies = function (args, context) {
     const data = read("lobbies")
-    const res = { "lobbies": data }
+
+    const res = { "lobbies": prune(data) }
     return res;
 }
 
@@ -147,6 +172,20 @@ handlers.join_lobby = function (args, context) {
                 write("lobbies", lobbies);
                 return lobbyData;
             }
+        }
+    }
+    return { success: false };
+}
+
+handlers.leave_lobby = function (args, context) {
+    let lobbies = read("lobbies");
+    for (let i = 0; i < lobbies.length; i++) {
+        if (lobbies[i].id === args.Lobby) {
+            var lobbyData = lobbies[i];
+            lobbyData.users.remove(args.user);
+            lobbies[i] = lobbyData;
+            write("lobbies", lobbies);
+            return lobbyData;
         }
     }
     return { success: false };

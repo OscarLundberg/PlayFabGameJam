@@ -8,6 +8,8 @@ using PlayFab.MultiplayerModels;
 
 public class MainMenu : MonoBehaviour
 {
+    public static MainMenu instance;
+
     public TMP_Text errorText;
     public GameObject login;
     public GameObject mainMenu;
@@ -20,6 +22,15 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
+        if (instance != null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+
         if (PlayerPrefs.HasKey("username"))
         {
             login_username.text = PlayerPrefs.GetString("username");
@@ -103,7 +114,6 @@ public class MainMenu : MonoBehaviour
 
         DisableAll();
         sky.SetActive(true);
-
         mainMenu.SetActive(true);
     }
 

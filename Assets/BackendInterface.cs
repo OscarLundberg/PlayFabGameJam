@@ -10,9 +10,12 @@ public class Poll
 {
     [SerializeField]
     public string Lobby;
-    public Poll(string Lobby)
+    [SerializeField]
+    public string user;
+    public Poll(string Lobby, string user)
     {
         this.Lobby = Lobby;
+        this.user = user;
     }
 
 }
