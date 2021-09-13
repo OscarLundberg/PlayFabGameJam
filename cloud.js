@@ -132,7 +132,7 @@ handlers.create_lobby = function (args, context) {
     write("lobbies", lobbies);
     return { success: true };
 }
-function prune() {
+function prune(lobbies) {
     let activeLobbies = [];
     for (let lobby of lobbies) {
         let activeUsers = [];
