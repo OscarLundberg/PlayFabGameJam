@@ -17,6 +17,7 @@ using UnityEngine.Events;
 
 public class GameplayHandler : MonoBehaviour
 {
+
     public static bool stopPolling = false;
     public MainMenu mm;
 
@@ -29,6 +30,9 @@ public class GameplayHandler : MonoBehaviour
     public string SessionTicket;
     public string MatchTicket;
     public string Lobby;
+    public string role;
+    public static bool isDay;
+    public int gameStage;
 
     public GameObject gameplay;
 
@@ -41,11 +45,11 @@ public class GameplayHandler : MonoBehaviour
         anim.SetTrigger("reset");
         if (instance != null)
         {
-            instance = this;
+            Destroy(this.gameObject);
         }
         else
         {
-            Destroy(this.gameObject);
+            instance = this;
         }
         maxPolls = 0;
         mm = src;
@@ -117,6 +121,7 @@ public class GameplayHandler : MonoBehaviour
     public SkyAnimator sa;
     public void Day()
     {
+        isDay = true;
         Gradient g = new Gradient();
         g.colorKeys = new GradientColorKey[] { new GradientColorKey(new Color(160, 255, 228), 0), new GradientColorKey(new Color(160, 255, 228), 0) };
         g.alphaKeys = new GradientAlphaKey[] { new GradientAlphaKey(0f, 0), new GradientAlphaKey(0.3f, 1) };
@@ -125,6 +130,7 @@ public class GameplayHandler : MonoBehaviour
 
     public void Night()
     {
+        isDay = false;
         Gradient g = new Gradient();
         g.colorKeys = new GradientColorKey[] { new GradientColorKey(new Color(118, 114, 161), 0), new GradientColorKey(new Color(118, 114, 161), 1) };
         g.alphaKeys = new GradientAlphaKey[] { new GradientAlphaKey(0f, 0), new GradientAlphaKey(0.3f, 1) };
@@ -156,6 +162,26 @@ public class GameplayHandler : MonoBehaviour
         List<MessagePayload> list = (res.FunctionResult as ListLobbyEventsResponse).events;
         list.AddRange(privateMessages);
         chatManager.SetEvents(list);
+    }
+
+    public void Target(string s)
+    {
+        TargetRequest target;
+        if (isDay)
+        {
+            target = new TargetRequest(Lobby, username, s, "vote", gameStage);
+        }
+        else
+        {
+            target = new TargetRequest(Lobby, username, s, "rob", gameStage);
+        }
+        var req = new ExecuteCloudScriptRequest();
+        req.FunctionName = "target";
+        req.FunctionParameter = target;
+        PlayFabClientAPI.ExecuteCloudScript<Lobby>(req, (ExecuteCloudScriptResult res) =>
+        {
+            MainMenu.instance.LoggedIn();
+        }, mm.DefaultError);
     }
 
     IEnumerator AfterDelay(float sec, UnityAction ua)

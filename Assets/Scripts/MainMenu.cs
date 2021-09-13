@@ -13,6 +13,8 @@ public class MainMenu : MonoBehaviour
     public TMP_Text errorText;
     public GameObject login;
     public GameObject mainMenu;
+    public GameObject gameplay;
+
     public TMP_Text username;
     public TMP_InputField login_username;
     public TMP_InputField login_password;
@@ -145,6 +147,7 @@ public class MainMenu : MonoBehaviour
         mainMenu.SetActive(false);
         matchmaking.SetActive(false);
         sky.SetActive(false);
+        gameplay.SetActive(false);
     }
 
 

@@ -21,14 +21,34 @@ public class ClientMethods : MonoBehaviour
         AudioPlayer.instance.RndClip();
     }
 
-    public void Robbed()
+    public void assign_role(string json)
     {
-        GameplayHandler.instance.privateMessages.Add(new MessagePayload("", "HOST", "You have been robbed... ", "", "Private"));
+        RoleAssignment ra = JsonUtility.FromJson<RoleAssignment>(json);
+        if (ra.user == GameplayHandler.instance.username)
+        {
+            GameplayHandler.instance.role = ra.role;
+        }
     }
 
-    public void Convicted()
+    public void set_game_stage(string stage)
     {
-        GameplayHandler.instance.privateMessages.Add(new MessagePayload("", "HOST", "You have been convicted... ", "", "Private"));
+        GameplayHandler.instance.gameStage = int.Parse(stage);
+    }
+
+    public void was_robbed()
+    {
+        GameplayHandler.instance.privateMessages.Add(new MessagePayload("", "HOST", "You have been robbed... Lost 500 gold", "", "Private"));
+    }
+
+    public void was_convicted(string player)
+    {
+        if (player == GameplayHandler.instance.username)
+            GameplayHandler.instance.privateMessages.Add(new MessagePayload("", "HOST", "You have been convicted... ", "", "Private"));
+    }
+
+    public void WhoWasConvicted(string param)
+    {
+        GameplayHandler.instance.privateMessages.Add(new MessagePayload("", "HOST", param, "", "Private"));
     }
 
     public void Night()
@@ -44,4 +64,32 @@ public class ClientMethods : MonoBehaviour
         GameplayHandler.instance.Day();
         GameplayHandler.instance.privateMessages.Add(new MessagePayload("", "HOST", "A new day breaks... ", "", "Private"));
     }
+}
+
+
+public class RoleAssignment
+{
+    public string user;
+    public string role;
+
+    public RoleAssignment(string user, string role)
+    {
+        this.user = user;
+        this.role = role;
+    }
+
+}
+public class SimpleWrapper
+{
+    string str;
+    int num;
+    public SimpleWrapper(string str)
+    {
+        this.str = str;
+    }
+    public SimpleWrapper(int num)
+    {
+        this.num = num;
+    }
+
 }

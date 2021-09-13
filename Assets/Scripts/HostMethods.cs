@@ -42,6 +42,36 @@ public class HostMethods : MonoBehaviour
         var param = new Poll(HostMethods.Lobby, HostMethods.user);
         SimpleRequest("start_game", param);
         BroadcastToClients("StartGame", true);
+        AfterSeconds(20, () =>
+        {
+            ProgressGame();
+        });
+    }
+
+    public void ProgressGame()
+    {
+        SimpleRequest<GameState>("get_game_state", new JoinLobbyRequest(Lobby, user), (ExecuteCloudScriptResult res) =>
+        {
+            var state = res.FunctionResult as GameState;
+            foreach (var player in state.players)
+            {
+                BroadcastToClients("assign_role", new RoleAssignment(player.name, player.role));
+            }
+            foreach (var player in state.stages[state.stage - 1].convicted)
+            {
+                BroadcastToClients("was_convicted", new SimpleWrapper(player));
+            }
+            foreach (var player in state.stages[state.stage - 1].robbed)
+            {
+                BroadcastToClients("was_robbed", new SimpleWrapper(player));
+            }
+            BroadcastToClients("set_game_stage", new SimpleWrapper(state.stage));
+
+            if (state.stage == 7)
+            {
+
+            }
+        });
     }
 
     public static void BroadcastToClients(string message, object param)
@@ -76,6 +106,8 @@ public class HostMethods : MonoBehaviour
     }
 
     static void EmptyCallback(ExecuteCloudScriptResult res) { }
+
+
 
 
     public static void SimpleRequest(string method, object param)

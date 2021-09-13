@@ -58,6 +58,10 @@ const mode = (arr) => [...new Set(arr)]
 //     stage: -1
 // }
 
+handlers.get_game_state = function (args, context) {
+    return read(args.Lobby + "_state");
+}
+
 
 
 handlers.start_game = function (args, context) {
@@ -70,6 +74,7 @@ handlers.start_game = function (args, context) {
     }
     write(args.Lobby + "_state", state);
 }
+
 
 
 handlers.lobby_poll = function (args, context) {
@@ -93,7 +98,18 @@ handlers.progress_game = function (args, context) {
     }
 
     if (playerActions.hasOwnProperty("rob")) {
-        currentStage.robbed = playerActions.rob;
+        let robbed = playerActions.rob;
+        currentStage.robbed = robbed;
+        let turncoat = shuffle(robbed)[0];
+        let newPlayers = [];
+        for (let player of state.players) {
+            if (player.nm === turncoat) {
+                newPlayers.push(player.nm, "dishonorable");
+            } else {
+                newPlayers.push(player);
+            }
+        }
+        state.players = newPlayers;
     }
 
     if (playerActions.hasOwnProperty("vote")) {
@@ -132,7 +148,6 @@ handlers.create_lobby = function (args, context) {
     write("lobbies", lobbies);
     return { success: true };
 }
-
 function prune(lobbies) {
     let activeLobbies = [];
     for (let lobby of lobbies) {
