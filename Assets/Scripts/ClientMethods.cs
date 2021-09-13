@@ -18,7 +18,7 @@ public class ClientMethods : MonoBehaviour
 
     public void ProgressGame()
     {
-
+        AudioPlayer.instance.RndClip();
     }
 
     public void Robbed()
@@ -33,11 +33,13 @@ public class ClientMethods : MonoBehaviour
 
     public void Night()
     {
+        AudioPlayer.instance.Night();
         GameplayHandler.instance.privateMessages.Add(new MessagePayload("", "HOST", "Night falls... ", "", "Private"));
     }
 
     public void Day()
     {
+        AudioPlayer.instance.Morning();
         GameplayHandler.instance.privateMessages.Add(new MessagePayload("", "HOST", "A new day breaks... ", "", "Private"));
     }
 }

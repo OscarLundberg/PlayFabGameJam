@@ -30,16 +30,15 @@ public class MainMenu : MonoBehaviour
         {
             instance = this;
         }
-
-        if (PlayerPrefs.HasKey("username"))
-        {
-            login_username.text = PlayerPrefs.GetString("username");
-            GuestLogin();
-        }
-        else
-        {
-            Logout();
-        }
+        // if (PlayerPrefs.HasKey("username"))
+        // {
+        // login_username.text = PlayerPrefs.GetString("username");
+        // GuestLogin();
+        // }
+        // else
+        // {
+        Logout();
+        // }
     }
 
     // public void Login()

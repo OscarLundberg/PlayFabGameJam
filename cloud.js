@@ -132,6 +132,7 @@ handlers.create_lobby = function (args, context) {
     write("lobbies", lobbies);
     return { success: true };
 }
+
 function prune(lobbies) {
     let activeLobbies = [];
     for (let lobby of lobbies) {
@@ -154,6 +155,7 @@ function prune(lobbies) {
     }
     return activeLobbies;
 }
+
 handlers.get_lobbies = function (args, context) {
     const data = read("lobbies")
 
